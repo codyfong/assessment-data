@@ -23,10 +23,7 @@ module.exports = {
     },
 
     getCities: (req, res) => {       
-        // sequelize.query(`
-        // select (city_id, name, rating, country_id) from cities city
-        // join countries country on city.country_id = country.country_id
-        // `)     
+
         sequelize.query(`
         select a.name as city, b.name as country, rating, a.country_id, a.city_id
         from cities as a 
@@ -78,22 +75,7 @@ module.exports = {
                 country_id serial primary key, 
                 name varchar
             );
-
-            create table cities (
-                city_id serial primary key,
-                name varchar,
-                rating integer,
-                country_id integer
-            );
-            
-            insert into cities (name, rating, country_id) 
-            values ('Salt Lake City', 5, 187),
-            ('Los Angeles', 3, 187),
-            ('Dallas', 2, 187),
-            ('Tokyo', 5, 86),
-            ('Paris', 1, 61)
-            ;
-
+        
             insert into countries (name)
             values ('Afghanistan'),
             ('Albania'),
@@ -290,6 +272,22 @@ module.exports = {
             ('Yemen'),
             ('Zambia'),
             ('Zimbabwe');
+
+            create table cities (
+                city_id serial primary key,
+                name varchar,
+                rating integer,
+                country_id integer references countries(country_id)
+            );
+
+            insert into cities (name, rating, country_id) 
+            values ('Salt Lake City', 5, 187),
+            ('Los Angeles', 2, 187),
+            ('Dallas', 3, 187),
+            ('Tokyo', 5, 86),
+            ('Paris', 1, 61)
+            ;
+
         `).then(() => {
             console.log('DB seeded!')
             res.sendStatus(200)
